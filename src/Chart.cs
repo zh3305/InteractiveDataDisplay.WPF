@@ -296,7 +296,39 @@ namespace InteractiveDataDisplay.WPF
         public static readonly DependencyProperty IsHorizontalNavigationEnabledProperty =
             DependencyProperty.Register("IsHorizontalNavigationEnabled", typeof(bool), typeof(Chart), new PropertyMetadata(true));
 
-        /// <summary>Gets or sets X Label provider</summary>
+        /// <summary>
+        /// Identifies <see cref="IsXAxisReversed"/> dependency property
+        /// </summary>
+        public static readonly DependencyProperty IsXAxisReversedProperty =
+            DependencyProperty.Register("IsXAxisReversed", typeof(bool), typeof(Chart), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether the x-axis is reversed or not.
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public bool IsXAxisReversed
+        {
+            get { return (bool)GetValue(IsXAxisReversedProperty); }
+            set { SetValue(IsXAxisReversedProperty, value); }
+        }
+
+        /// <summary>
+        /// Identifies <see cref="IsYAxisReversed"/> dependency property
+        /// </summary>
+        public static readonly DependencyProperty IsYAxisReversedProperty =
+            DependencyProperty.Register("IsYAxisReversed", typeof(bool), typeof(Chart), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether the y-axis is reversed or not.
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public bool IsYAxisReversed
+        {
+            get { return (bool)GetValue(IsYAxisReversedProperty); }
+            set { SetValue(IsYAxisReversedProperty, value); }
+        }
+
+       /// <summary>Gets or sets X Label provider</summary>
         [Category("InteractiveDataDisplay")]
         public ILabelProvider XLabelProvider
         {
@@ -319,5 +351,5 @@ namespace InteractiveDataDisplay.WPF
         /// <summary>Identifies <see cref="YLabelProvider"/> property</summary>
         public static readonly DependencyProperty YLabelProviderProperty =
             DependencyProperty.Register("YLabelProvider", typeof(ILabelProvider), typeof(Chart), new PropertyMetadata(new LabelProvider()));
-    }
+    }   
 }

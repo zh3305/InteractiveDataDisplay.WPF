@@ -129,6 +129,24 @@ namespace InteractiveDataDisplay.WPF
             DependencyProperty.Register("AxisOrientation", typeof(AxisOrientation), typeof(PlotAxis), new PropertyMetadata(AxisOrientation.Bottom));
 
         /// <summary>
+        /// Gets or sets a flag indicating whether the axis is reversed or not.
+        /// </summary>
+        /// <remarks>Axis is not reversed by default.</remarks>
+        [Category("InteractiveDataDisplay")]
+        [Description("Defines orientation of axis and location of labels")]
+        public bool IsReversed
+        {
+            get { return (bool)GetValue(IsReversedProperty); }
+            set { SetValue(IsReversedProperty, value); }
+        }
+        /// <summary>
+        /// Identifies the <see cref="IsReversed"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsReversedProperty =
+            DependencyProperty.Register("IsReversed", typeof(bool), typeof(PlotAxis), new PropertyMetadata(false));
+
+
+        /// <summary>
         /// Gets or Sets label format of axis
         /// </summary>
         [Category("InteractiveDataDisplay")]
