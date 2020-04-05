@@ -105,7 +105,7 @@
                     <Grid Background="Transparent" Margin="10,10,10,10" VerticalAlignment="Top" 
                           HorizontalAlignment="Right">
                         <Rectangle x:Name="legendBorder" Stroke="Black" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                            RadiusX="10" RadiusY="10" Fill="White" Opacity="0.75"
+                            RadiusX="10" RadiusY="10" Fill="Black" Opacity="0.75"
                             Visibility="{Binding ItemsCount, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CountToVisibilityConverter}}"/>
                         <ScrollViewer x:Name="scrollViewer"
                                       Margin="10,10,10,10" VerticalScrollBarVisibility="Auto" 

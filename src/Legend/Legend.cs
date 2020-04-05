@@ -39,10 +39,10 @@ namespace InteractiveDataDisplay.WPF
         /// <param name="newContent">New value of property.</param>
         protected override void OnContentChanged(object oldContent, object newContent)
         {
-            var panel = oldContent as Panel;
+            var panel = oldContent as StackPanel;
             if (panel != null)
                 panel.LayoutUpdated -= OnContentLayoutUpdated;
-            panel = newContent as Panel;
+            panel = newContent as StackPanel;
             if (panel != null)
                 panel.LayoutUpdated += OnContentLayoutUpdated;
             UpdateItemsCount();
@@ -74,7 +74,7 @@ namespace InteractiveDataDisplay.WPF
 
         private void UpdateItemsCount()
         {
-            var panel = Content as Panel;
+            var panel = Content as StackPanel;
             if (panel != null)
                 ItemsCount = panel.Children.Count;
             else
