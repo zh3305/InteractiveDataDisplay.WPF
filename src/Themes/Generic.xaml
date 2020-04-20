@@ -87,7 +87,7 @@
                             <Border BorderThickness="{TemplateBinding BorderThickness}"
                                     BorderBrush="{TemplateBinding Foreground}" d3:Figure.Placement="Center"/>
                             <d3:Legend x:Name="PART_legend" 
-                                       Foreground="Black" Content="{TemplateBinding LegendContent}"
+                                       Foreground="{TemplateBinding Foreground}" Content="{TemplateBinding LegendContent}"
                                        Visibility="{TemplateBinding LegendVisibility}"/>
                         </d3:Figure>
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />

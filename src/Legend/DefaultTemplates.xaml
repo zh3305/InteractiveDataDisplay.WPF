@@ -9,13 +9,13 @@
     <DataTemplate x:Key="InteractiveDataDisplay.WPF.LineGraph">
         <StackPanel Orientation="Horizontal">
             <Line Width="15" Height="15" X1="0" Y1="0" X2="15" Y2="15" Stroke="{Binding Stroke}" StrokeThickness="{Binding StrokeThickness}" StrokeDashArray="{Binding StrokeDashArray}"/>
-            <TextBlock Margin="5,0,0,0" Text="{Binding Path=Description}"/>
+            <TextBlock Margin="5,0,0,0" Text="{Binding Path=Description}" Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path= Foreground}"/>
         </StackPanel>
     </DataTemplate>
     
     <!-- Default legend item for Heatmap -->
     <DataTemplate x:Key="InteractiveDataDisplay.WPF.HeatmapGraph">
-        <d3:PaletteControl Range="{Binding Path=PaletteRange}" Palette="{Binding Path=Palette}" Width="150"/>
+        <d3:PaletteControl Range="{Binding Path=PaletteRange}" Palette="{Binding Path=Palette}" Width="150" Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path= Foreground}"/>
     </DataTemplate>
     
     <!-- Default legend item for MarkerGraph -->
