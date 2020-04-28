@@ -37,7 +37,7 @@
                                    PlotOriginX="{Binding PlotOriginX, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    PlotOriginY="{Binding PlotOriginY, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    IsXAxisReversed = "{Binding IsXAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                   IsYAxisReversed = "{Binding IsXAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   IsYAxisReversed = "{Binding IsYAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    IsAutoFitEnabled="{Binding IsAutoFitEnabled, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    AspectRatio="{Binding AspectRatio, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    ExtraPadding="{TemplateBinding BorderThickness}"
@@ -64,7 +64,7 @@
                                          VerticalTicks="{Binding Ticks,ElementName=PART_verticalAxis, Mode=OneWay}"
                                          HorizontalTicks="{Binding Ticks,ElementName=PART_horizontalAxis, Mode=OneWay}"
                                          IsXAxisReversed = "{Binding IsXAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                         IsYAxisReversed = "{Binding IsXAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                         IsYAxisReversed = "{Binding IsYAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          Stroke="{TemplateBinding Foreground}" Opacity="0.25"/>
                             <ContentControl d3:Figure.Placement="Bottom" 
                                             HorizontalAlignment="Center"
