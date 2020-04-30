@@ -57,6 +57,7 @@
                                          AxisOrientation="Left"
                                          IsReversed = "{Binding IsYAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
 										 LabelProvider="{TemplateBinding YLabelProvider}"
+                                         Visibility="{Binding YAxisVisibility, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          Foreground="{TemplateBinding Foreground}">
                                     <d3:MouseNavigation IsHorizontalNavigationEnabled="False"/>
                             </d3:PlotAxis>
@@ -80,6 +81,7 @@
                                          AxisOrientation="Bottom"
                                          IsReversed = "{Binding IsXAxisReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          Foreground="{TemplateBinding Foreground}"
+                                         Visibility="{Binding XAxisVisibility, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
 										 LabelProvider="{TemplateBinding XLabelProvider}">
                                 <d3:MouseNavigation IsVerticalNavigationEnabled="False"/>
                             </d3:PlotAxis>
