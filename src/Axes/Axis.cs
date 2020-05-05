@@ -194,22 +194,44 @@ namespace InteractiveDataDisplay.WPF
                     }
                 }));
 
+
+        [Description("Label format of Axis")]
+        [Category("InteractiveDataDisplay")]
+        public ILabelProvider LabelProvider
+        {
+            get { return (ILabelProvider)GetValue(LabelProviderProperty); }
+            set { SetValue(LabelProviderProperty, value); }
+        }
+        /// <summary>
+        /// Gets or Sets label format of axis
+        /// </summary>
+        public static readonly DependencyProperty LabelProviderProperty =
+            DependencyProperty.Register("LabelProvider", typeof(ILabelProvider), typeof(Axis), new PropertyMetadata(new LabelProvider(),
+                (o, e) =>
+                {
+                    Axis axis = (Axis)o;
+                    if (axis != null) {
+                        axis.labelProvider = e.NewValue as ILabelProvider;
+                        axis.InvalidateMeasure();
+                    }
+                }));
+
         /// <summary>
         /// Gets or sets the brush for labels and ticks of axis
         /// </summary>
         /// <remarks>The default foreground is black</remarks>
         [Category("Appearance")]
         [Description("Brush for labels and ticks")]
-        public SolidColorBrush Foreground
+        public Brush Foreground
         {
-            get { return (SolidColorBrush)GetValue(ForegroundProperty); }
+            get { return (Brush)GetValue(ForegroundProperty); }
             set { SetValue(ForegroundProperty, value); }
         }
         /// <summary>
         /// Identifies the <see cref="Foreground"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ForegroundProperty =
-            DependencyProperty.Register("Foreground", typeof(SolidColorBrush), typeof(Axis), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
+            DependencyProperty.Register("Foreground", typeof(Brush), typeof(Axis), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
 
         /// <summary>
         /// Gets or sets the maximum possible count of ticks.

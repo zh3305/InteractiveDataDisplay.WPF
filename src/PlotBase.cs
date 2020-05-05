@@ -562,14 +562,14 @@ namespace InteractiveDataDisplay.WPF
                 }));
 
         /// <summary>Enables or disables clipping of graphic elements that are outside plotting area</summary>
-        public bool ClipToBounds
+        public new bool ClipToBounds
         {
             get { return (bool)GetValue(ClipToBoundsProperty); }
             set { SetValue(ClipToBoundsProperty, value); }
         }
 
         /// <summary>Identifies <see cref="ClipToBounds"/> dependency property</summary>
-        public static readonly DependencyProperty ClipToBoundsProperty =
+        public new static readonly DependencyProperty ClipToBoundsProperty =
             DependencyProperty.Register("ClipToBounds", typeof(bool), typeof(PlotBase), new PropertyMetadata(true,
                 (s, a) => ((PlotBase)s).OnClipToBoundsChanged(a)));
 
