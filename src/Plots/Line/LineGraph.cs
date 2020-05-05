@@ -10,6 +10,8 @@ using System.Windows.Data;
 using System.Collections;
 using System.Globalization;
 using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace InteractiveDataDisplay.WPF
 {
@@ -40,6 +42,55 @@ namespace InteractiveDataDisplay.WPF
                 InteractiveDataDisplay.WPF.Plot.SetPoints(linePlot.polyline, (PointCollection)e.NewValue);
             }
         }
+
+        /// Gets or sets line graph Observable points.
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        [Description("Line graph observable points")]
+        public ObservableCollection<Point> ObservablePoints
+        {
+            get { return (ObservableCollection<Point>)GetValue(ObservablePointsProperty); }
+            set { SetValue(ObservablePointsProperty, value); }
+        }
+
+        /// <summary>
+        /// Identifies the ObservablePoints dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ObservablePointsProperty =
+            DependencyProperty.RegisterAttached(
+                "ObservablePoints",
+                typeof(ObservableCollection<Point>),
+                typeof(LineGraph),
+                new PropertyMetadata(
+                    new ObservableCollection<Point>(),
+                    (d, e) =>
+                    {
+                        var linePlot = (LineGraph)d;
+                        var updateAction = new NotifyCollectionChangedEventHandler(
+                        (o, args) =>
+                        {
+                            if (linePlot != null)
+                            {
+                                InteractiveDataDisplay.WPF.Plot.SetPoints(linePlot.polyline, new PointCollection((ObservableCollection<Point>)o));
+                            }
+                        });
+
+                        if (e.OldValue != null)
+                        {
+                            var coll = (INotifyCollectionChanged)e.OldValue;
+                            coll.CollectionChanged -= updateAction;
+                        }
+
+                        if (e.NewValue != null)
+                        {
+                            var coll = (INotifyCollectionChanged)e.NewValue;
+                            coll.CollectionChanged += updateAction;
+                            if (linePlot != null)
+                            {
+                                InteractiveDataDisplay.WPF.Plot.SetPoints(linePlot.polyline, new PointCollection((ObservableCollection<Point>)e.NewValue));
+                            }
+                        }
+                    }));
 
         /// <summary>
         /// Initializes a new instance of <see cref="LineGraph"/> class.

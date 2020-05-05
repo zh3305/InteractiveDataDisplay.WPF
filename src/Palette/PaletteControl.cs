@@ -132,7 +132,7 @@ namespace InteractiveDataDisplay.WPF
             StackPanel stackPanel = new StackPanel();
 
             image = new Image { Height = 20, Stretch = Stretch.None, HorizontalAlignment = HorizontalAlignment.Stretch };
-            axis = new Axis { AxisOrientation = AxisOrientation.Bottom, HorizontalAlignment = HorizontalAlignment.Stretch };
+            axis = new Axis { AxisOrientation = AxisOrientation.Bottom, HorizontalAlignment = HorizontalAlignment.Stretch , Foreground = new SolidColorBrush(Colors.White)};
 
             stackPanel.Children.Add(image);
             stackPanel.Children.Add(axis);
