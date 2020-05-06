@@ -928,11 +928,19 @@ namespace InteractiveDataDisplay.WPF
                 DataRect desiredRect;
                 if (IsAutoFitEnabled)
                 {
+                    //desiredRect = PlotRect;//AggregateBounds();
+                    //if (desiredRect.IsEmpty)
+                    //    desiredRect = new DataRect(0, 0, 1, 1);
+                    //desiredRect.X = desiredRect.X.Zoom(0.5);
+                    //desiredRect.Y = desiredRect.Y.Zoom(0.5);
+                    //SetPlotRect(desiredRect);
+
                     desiredRect = AggregateBounds();
                     if (desiredRect.IsEmpty)
                         desiredRect = new DataRect(0, 0, 1, 1);
 
                     SetPlotRect(desiredRect, true);
+
                 }
                 else // resize
                     desiredRect = PlotRect;
