@@ -128,6 +128,14 @@ namespace InteractiveDataDisplay.WPF
             if (IsAutoFitEnabled)
             {
                 desiredRect = AggregateBounds();
+                if (desiredRect.XMax.IsFinite() || desiredRect.YMax.IsFinite())
+                {
+                    var width = desiredRect.Width * 0.05;
+                    var height = desiredRect.Height * 0.05;
+                    desiredRect = new DataRect(
+                        desiredRect.XMin - width, desiredRect.YMin - height,
+                        desiredRect.XMax + width, desiredRect.YMax + height);
+                }
                 if (desiredRect.IsEmpty)
                     desiredRect = new DataRect(0, 0, 1, 1);
                 SetPlotRect(desiredRect, true);
