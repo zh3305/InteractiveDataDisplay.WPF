@@ -64,7 +64,7 @@ namespace InteractiveDataDisplay.WPF
         /// <returns>True if a value can be converted, false otherwise.</returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+            return (context!=null) && sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
         }
 
         /// <summary>
