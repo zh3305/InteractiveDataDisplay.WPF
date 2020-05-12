@@ -120,6 +120,42 @@ namespace InteractiveDataDisplay.WPF
             control.UpdateBitmap();
         }
 
+
+
+        public AxisOrientation PaletteAxisOrientation
+        {
+            get { return (AxisOrientation)GetValue(PaletteAxisOrientationProperty); }
+            set { SetValue(PaletteAxisOrientationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PaletteAxisOrientation.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaletteAxisOrientationProperty =
+            DependencyProperty.Register("PaletteAxisOrientation", typeof(AxisOrientation), typeof(PaletteControl), new PropertyMetadata(AxisOrientation.Bottom, OnPaletteAxisOrientationChanged));
+
+        private static void OnPaletteAxisOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PaletteControl control = (PaletteControl)d;
+            control.axis.AxisOrientation = (AxisOrientation)e.NewValue;
+        }
+
+
+
+        public ILabelProvider PaletteLabelProvider
+        {
+            get { return (ILabelProvider)GetValue(PaletteLabelProviderProperty); }
+            set { SetValue(PaletteLabelProviderProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyPropertyPaletteLabelProvider.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaletteLabelProviderProperty =
+            DependencyProperty.Register("PaletteLabelProvider", typeof(ILabelProvider), typeof(PaletteControl), new PropertyMetadata(new LabelProvider(),onPaletteLabelProviderChanged));
+
+        private static void onPaletteLabelProviderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PaletteControl control = (PaletteControl)d;
+            control.axis.LabelProvider = (ILabelProvider)e.NewValue;
+        }
+
         #endregion
 
         #region ctor
@@ -130,6 +166,7 @@ namespace InteractiveDataDisplay.WPF
         public PaletteControl()
         {
             StackPanel stackPanel = new StackPanel();
+            //stackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
 
             image = new Image { Height = 20, Stretch = Stretch.None, HorizontalAlignment = HorizontalAlignment.Stretch };
             axis = new Axis { AxisOrientation = AxisOrientation.Bottom, HorizontalAlignment = HorizontalAlignment.Stretch , Foreground = new SolidColorBrush(Colors.White)};
@@ -141,8 +178,10 @@ namespace InteractiveDataDisplay.WPF
 
             SizeChanged += (o, e) =>
             {
-                if (e.PreviousSize.Width == 0 || e.PreviousSize.Height == 0 || Double.IsNaN(e.PreviousSize.Width) || Double.IsNaN(e.PreviousSize.Height))
+                if (e.PreviousSize.Width == 0 || e.PreviousSize.Height == 0 || Double.IsNaN(e.PreviousSize.Width) || Double.IsNaN(e.PreviousSize.Height)) {
+                    Width = ActualWidth;
                     UpdateBitmap();
+                }
             };
 
             IsTabStop = false;
@@ -159,7 +198,7 @@ namespace InteractiveDataDisplay.WPF
 
         private void UpdateBitmap()
         {
-            if (Width == 0 || Double.IsNaN(Width))
+            if (Width == 0  || Double.IsNaN(Width))
             {
                 image.Source = null;
                 return;
