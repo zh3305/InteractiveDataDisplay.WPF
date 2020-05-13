@@ -128,10 +128,11 @@ namespace InteractiveDataDisplay.WPF
             if (IsAutoFitEnabled)
             {
                 desiredRect = AggregateBounds();
+                
                 if (desiredRect.XMax.IsFinite() || desiredRect.YMax.IsFinite())
                 {
-                    var width = desiredRect.Width * 0.05;
-                    var height = desiredRect.Height * 0.05;
+                    var width = desiredRect.Width * ((double)(100-AutoFitScaleW)/100);//0.05;
+                    var height = desiredRect.Height * ((double)(100-AutoFitScaleH)/100); //0.05;
                     desiredRect = new DataRect(
                         desiredRect.XMin - width, desiredRect.YMin - height,
                         desiredRect.XMax + width, desiredRect.YMax + height);

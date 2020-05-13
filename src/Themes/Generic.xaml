@@ -42,6 +42,8 @@
                                    IsAutoFitEnabled="{Binding IsAutoFitEnabled, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    AspectRatio="{Binding AspectRatio, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    ExtraPadding="{TemplateBinding BorderThickness}"
+                                   AutoFitScaleH="{Binding AutoFitScaleH, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   AutoFitScaleW="{Binding AutoFitScaleW, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    Background="{TemplateBinding Background}"
                                    Padding="{TemplateBinding Padding}">
                             <d3:MouseNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"

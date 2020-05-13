@@ -384,5 +384,33 @@ namespace InteractiveDataDisplay.WPF
         public static readonly DependencyProperty YAxisVisibilityProperty =
             DependencyProperty.Register(nameof(YAxisVisibility), typeof(Visibility), typeof(Chart), new PropertyMetadata(Visibility.Visible));
 
+        /// <summary>
+        /// AutoFit Scale Height from 0-100 <see cref="AutoFitHScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleH
+        {
+            get { return (int)GetValue(AutoFitHScaleProperty); }
+            set { SetValue(AutoFitHScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitHScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutoFitHScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleH), typeof(int), typeof(Chart), new PropertyMetadata(100));
+
+
+        /// <summary>
+        /// AutoFit Scale Width from 0-100 <see cref="AutofitWScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleW
+        {
+            get { return (int)GetValue(AutofitWScaleProperty); }
+            set { SetValue(AutofitWScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitVScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutofitWScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleW), typeof(int), typeof(Chart), new PropertyMetadata(100));
+
+
     }
 }
