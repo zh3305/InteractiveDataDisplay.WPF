@@ -244,6 +244,10 @@ namespace InteractiveDataDisplay.WPF {
         /// <returns>Minimal plot rectangle, which contains all plot rectangles of child elements</returns>
         protected override DataRect ComputeBounds()
         {
+            if (!IsVisible)
+            {
+                return new DataRect(new Range(), new Range());
+            }
             var localPlotRect = DataRect.Empty;
             foreach (UIElement child in Children)
             {
