@@ -15,7 +15,10 @@
     
     <!-- Default legend item for Heatmap -->
     <DataTemplate x:Key="InteractiveDataDisplay.WPF.HeatmapGraph">
-        <d3:PaletteControl Range="{Binding Path=PaletteRange}" Palette="{Binding Path=Palette}" Width="150" Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path= Foreground}"/>
+        <d3:PaletteControl Range="{Binding Path=PaletteRange}" Palette="{Binding Path=Palette}" Width="150" Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path= Foreground}"
+                                  PaletteAxisOrientation="Bottom" 
+                                  PaletteAxisForeground="White"
+                                  PaletteOrientation="Horizontal"/>
     </DataTemplate>
     
     <!-- Default legend item for MarkerGraph -->

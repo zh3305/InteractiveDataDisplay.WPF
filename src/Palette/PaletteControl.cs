@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
+using System.IO;
 
 namespace InteractiveDataDisplay.WPF
 {
@@ -18,8 +19,8 @@ namespace InteractiveDataDisplay.WPF
     {
         #region Fields
 
-        private Image image;
-        private Axis axis;
+        private Image image ;
+        private Axis axis ;
 
         #endregion
 
@@ -30,7 +31,7 @@ namespace InteractiveDataDisplay.WPF
         /// Default value is black palette.
         /// </summary>
         [Category("InteractiveDataDisplay")]
-        [TypeConverter(typeof(StringToPaletteTypeConverter))] 
+        [TypeConverter(typeof(StringToPaletteTypeConverter))]
         public Palette Palette
         {
             get { return (Palette)GetValue(PaletteProperty); }
@@ -148,13 +149,57 @@ namespace InteractiveDataDisplay.WPF
 
         // Using a DependencyProperty as the backing store for MyPropertyPaletteLabelProvider.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PaletteLabelProviderProperty =
-            DependencyProperty.Register("PaletteLabelProvider", typeof(ILabelProvider), typeof(PaletteControl), new PropertyMetadata(new LabelProvider(),onPaletteLabelProviderChanged));
+            DependencyProperty.Register("PaletteLabelProvider", typeof(ILabelProvider), typeof(PaletteControl), new PropertyMetadata(new LabelProvider(), onPaletteLabelProviderChanged));
 
         private static void onPaletteLabelProviderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             PaletteControl control = (PaletteControl)d;
             control.axis.LabelProvider = (ILabelProvider)e.NewValue;
         }
+
+
+
+        public Brush PaletteAxisForeground
+        {
+            get { return (Brush)GetValue(PaletteAxisForegroundProperty); }
+            set { SetValue(PaletteAxisForegroundProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PaletteAxisForeground.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaletteAxisForegroundProperty =
+            DependencyProperty.Register("PaletteAxisForeground", typeof(Brush), typeof(PaletteControl), new PropertyMetadata(new SolidColorBrush(Colors.Black), 
+                (d,e)=>{
+                    PaletteControl control = (PaletteControl)d;
+                    control.axis.Foreground = (Brush)e.NewValue;
+                    control.UpdateBitmap();
+                }));
+
+
+
+        
+        public Orientation PaletteOrientation
+        {
+            get { return (Orientation)GetValue(PaletteOrientationProperty); }
+            set { SetValue(PaletteOrientationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PaletteOrientation.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaletteOrientationProperty =
+            DependencyProperty.Register(nameof(PaletteOrientation), typeof(Orientation), typeof(PaletteControl), new PropertyMetadata(Orientation.Horizontal,
+                (d,e)=> {
+                    PaletteControl control = (PaletteControl)d;
+                    if((Orientation)e.NewValue == Orientation.Horizontal) 
+                    { 
+                        ((StackPanel)control.Content).Orientation = Orientation.Vertical;
+                    }
+                    else
+                    {
+                        ((StackPanel)control.Content).Orientation = Orientation.Horizontal;
+                    }
+                    control.UpdateBitmap();
+                }));
+
+
 
         #endregion
 
@@ -166,10 +211,9 @@ namespace InteractiveDataDisplay.WPF
         public PaletteControl()
         {
             StackPanel stackPanel = new StackPanel();
-            //stackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            image = new Image { Height = 20, Stretch = Stretch.None, HorizontalAlignment = HorizontalAlignment.Stretch };
-            axis = new Axis { AxisOrientation = AxisOrientation.Bottom, HorizontalAlignment = HorizontalAlignment.Stretch , Foreground = new SolidColorBrush(Colors.White)};
+            image = new Image { Height = PaletteHeight, Stretch = Stretch.None, HorizontalAlignment = HorizontalAlignment.Stretch };
+            axis = new Axis { AxisOrientation = PaletteAxisOrientation, HorizontalAlignment = HorizontalAlignment.Stretch , Foreground = PaletteAxisForeground};
 
             stackPanel.Children.Add(image);
             stackPanel.Children.Add(axis);
@@ -179,8 +223,11 @@ namespace InteractiveDataDisplay.WPF
             SizeChanged += (o, e) =>
             {
                 if (e.PreviousSize.Width == 0 || e.PreviousSize.Height == 0 || Double.IsNaN(e.PreviousSize.Width) || Double.IsNaN(e.PreviousSize.Height)) {
-                    Width = ActualWidth;
                     UpdateBitmap();
+                    Thickness marginThickness = this.Margin;
+                    Width = (axis.ActualWidth + image.Width+5) - marginThickness.Left - marginThickness.Left;
+                    Height = Math.Max(axis.ActualHeight,image.Height) - marginThickness.Top - marginThickness.Bottom;
+                    
                 }
             };
 
@@ -198,19 +245,35 @@ namespace InteractiveDataDisplay.WPF
 
         private void UpdateBitmap()
         {
-            if (Width == 0  || Double.IsNaN(Width))
+            if (PaletteOrientation == Orientation.Horizontal && (Width == 0 || Double.IsNaN(Width)))
             {
                 image.Source = null;
                 return;
             }
-            if (Palette == null)
+            if (PaletteOrientation == Orientation.Vertical && (Height == 0 || Double.IsNaN(Height)))
             {
                 image.Source = null;
                 return;
             }
 
-            int width = (int)Width;
-            int height = (int)image.Height;
+            if (Palette == null)
+            {
+                image.Source = null;
+                return;
+            }
+            int width = 0;
+            int height = 0;
+            if (PaletteOrientation == Orientation.Horizontal)
+            {
+                width = (int)Width;
+                height = (int)PaletteHeight;
+            }
+            else
+            {
+                width = (int)Height;
+                height = (int)PaletteHeight;
+            }
+
             WriteableBitmap bmp2 = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             WriteableBitmap bmp = bmp2.Clone();
             bmp.Lock();
@@ -235,7 +298,19 @@ namespace InteractiveDataDisplay.WPF
                 }
             }
             bmp.Unlock();
-            image.Source = bmp;
+
+
+            if (PaletteOrientation == Orientation.Vertical)
+            {
+                //SaveBMP("paleteControl_0.bmp", bmp);
+                image.Source = WriteableBitmapreomBitmap(rotateImage90(BitmapFromWriteableBitmap(bmp)));
+            }
+            else
+            {
+                image.Source = bmp;
+            }
+            image.Width = image.Source.Width;
+            image.Height = image.Source.Height;
         }
 
         private static void OnRangeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -248,9 +323,51 @@ namespace InteractiveDataDisplay.WPF
         {
             axis.Range = Range;
         }
-
         #endregion
 
+
+
+        private System.Drawing.Bitmap rotateImage90(System.Drawing.Bitmap b)
+        {
+            System.Drawing.Bitmap returnBitmap = b;
+            returnBitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate270FlipNone);
+            return returnBitmap;
+        }
+
+        private System.Drawing.Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
+        {
+            System.Drawing.Bitmap bmp;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
+                enc.Save(outStream);
+                bmp = new System.Drawing.Bitmap(outStream);
+            }
+            return bmp;
+        }
+        private WriteableBitmap WriteableBitmapreomBitmap(System.Drawing.Bitmap bmp) { 
+        System.Windows.Media.Imaging.BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bmp.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                System.Windows.Media.Imaging.WriteableBitmap writeableBitmap = new System.Windows.Media.Imaging.WriteableBitmap(bitmapSource);
+            return writeableBitmap;
+        }
+
+        void SaveBMP(string filename, BitmapSource image5)
+        {
+            if (filename != string.Empty)
+            {
+                using (FileStream stream5 = new FileStream(filename, FileMode.Create))
+                {
+                    BmpBitmapEncoder encoder5 = new BmpBitmapEncoder();
+                    encoder5.Frames.Add(BitmapFrame.Create(image5));
+                    encoder5.Save(stream5);
+                }
+            }
+        }
     }
 }
 
