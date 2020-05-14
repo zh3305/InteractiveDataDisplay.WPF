@@ -26,8 +26,8 @@ namespace InteractiveDataDisplay.WPF
 
         private const int maxTickArrangeIterations = 12;
         private int maxTicks = 20;
-        private const double increaseRatio = 8.0;
-        private const double decreaseRatio = 8.0;
+        private const double increaseRatio = 6.0;
+        private const double decreaseRatio = 6.0;
         private const double tickLength = 10;
 
         private bool drawTicks = true;
