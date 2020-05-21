@@ -191,13 +191,35 @@ namespace InteractiveDataDisplay.WPF
                     if((Orientation)e.NewValue == Orientation.Horizontal) 
                     { 
                         ((StackPanel)control.Content).Orientation = Orientation.Vertical;
+                        control.PaletteAxisOrientation = AxisOrientation.Bottom;
                     }
                     else
                     {
                         ((StackPanel)control.Content).Orientation = Orientation.Horizontal;
+                        control.PaletteAxisOrientation = AxisOrientation.Right;
                     }
+                    
                     control.UpdateBitmap();
                 }));
+
+
+        public Thickness PaletteMargin
+        {
+            get { return (Thickness)GetValue(PaletteMarginProperty); }
+            set { SetValue(PaletteMarginProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PaletteMarginerty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaletteMarginProperty =
+            DependencyProperty.Register(nameof(PaletteMargin), typeof(Thickness), typeof(PaletteControl), new PropertyMetadata(new Thickness(0,0,0,0),
+                (d,e)=> {
+                    PaletteControl control = (PaletteControl)d;
+                    control.axis.Margin = (Thickness)e.NewValue;
+                    control.image.Margin = (Thickness)e.NewValue;
+                    control.UpdateBitmap();
+                }
+                ));
+
 
 
 
@@ -224,10 +246,6 @@ namespace InteractiveDataDisplay.WPF
             {
                 if (e.PreviousSize.Width == 0 || e.PreviousSize.Height == 0 || Double.IsNaN(e.PreviousSize.Width) || Double.IsNaN(e.PreviousSize.Height)) {
                     UpdateBitmap();
-                    Thickness marginThickness = this.Margin;
-                    Width = (axis.ActualWidth + image.Width+5) - marginThickness.Left - marginThickness.Left;
-                    Height = Math.Max(axis.ActualHeight,image.Height) - marginThickness.Top - marginThickness.Bottom;
-                    
                 }
             };
 
@@ -311,6 +329,10 @@ namespace InteractiveDataDisplay.WPF
             }
             image.Width = image.Source.Width;
             image.Height = image.Source.Height;
+
+            //Thickness marginThickness = this.Margin;
+            //Width = (axis.ActualWidth + image.Width + 10) - marginThickness.Left - marginThickness.Left;
+            //Height = Math.Max(image.Height , axis.Height) - marginThickness.Top - marginThickness.Bottom;
         }
 
         private static void OnRangeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
