@@ -43,9 +43,17 @@
                                    Background="{TemplateBinding Background}">
                             <d3:MouseNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
                                                 IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
                                                 x:Name="PART_mouseNavigation"/>
                             <d3:KeyboardNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
                                                    IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                   NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                   NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                   NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                   NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
                                                    x:Name="PART_keyboardNavigation"/>
                             <d3:VerticalContentControl d3:Figure.Placement="Left"
                                                        Content="{TemplateBinding LeftTitle}"

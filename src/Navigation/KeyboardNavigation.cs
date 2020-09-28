@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.ComponentModel;
+using static InteractiveDataDisplay.WPF.Navigation.NavigationBoundsHelper;
 
 namespace InteractiveDataDisplay.WPF
 {
@@ -58,6 +59,50 @@ namespace InteractiveDataDisplay.WPF
         public static readonly DependencyProperty IsHorizontalNavigationEnabledProperty =
             DependencyProperty.Register("IsHorizontalNavigationEnabled", typeof(bool), typeof(KeyboardNavigation), new PropertyMetadata(true));
 
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxY
+        {
+            get { return (double)GetValue(NavigationLimitMaxYProperty); }
+            set { SetValue(NavigationLimitMaxYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxYProperty =
+            DependencyProperty.Register("NavigationLimitMaxY", typeof(double),
+                typeof(KeyboardNavigation), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinY
+        {
+            get { return (double)GetValue(NavigationLimitMinYProperty); }
+            set { SetValue(NavigationLimitMinYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinYProperty =
+            DependencyProperty.Register("NavigationLimitMinY", typeof(double),
+                typeof(KeyboardNavigation), new PropertyMetadata(double.NegativeInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxX
+        {
+            get { return (double)GetValue(NavigationLimitMaxXProperty); }
+            set { SetValue(NavigationLimitMaxXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxXProperty =
+            DependencyProperty.Register("NavigationLimitMaxX", typeof(double),
+                typeof(KeyboardNavigation), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinX
+        {
+            get { return (double)GetValue(NavigationLimitMinXProperty); }
+            set { SetValue(NavigationLimitMinXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinXProperty =
+            DependencyProperty.Register("NavigationLimitMinX", typeof(double),
+                typeof(KeyboardNavigation), new PropertyMetadata(double.NegativeInfinity));
+
         void KeyboardNavigationUnloaded(object sender, RoutedEventArgs e)
         {
             masterPlot = null;
@@ -78,11 +123,14 @@ namespace InteractiveDataDisplay.WPF
                     var rect = masterPlot.PlotRect;
                     double dy = rect.Height / 200;
 
-                    masterPlot.SetPlotRect(new DataRect(
+                    var newRect = new DataRect(
                         rect.XMin,
                         rect.YMin - dy,
                         rect.XMin + rect.Width,
-                        rect.YMin - dy + rect.Height));
+                        rect.YMin - dy + rect.Height);
+
+                    if (NavigationYIsInBounds(newRect, NavigationLimitMaxY, NavigationLimitMinY))
+                        masterPlot.SetPlotRect(newRect);
 
                     masterPlot.IsAutoFitEnabled = false;
                     e.Handled = true;
@@ -90,13 +138,16 @@ namespace InteractiveDataDisplay.WPF
                 if (e.Key == Key.Down && IsVerticalNavigationEnabled)
                 {
                     var rect = masterPlot.PlotRect;
-                    double dy = - rect.Height / 200;
+                    double dy = -rect.Height / 200;
 
-                    masterPlot.SetPlotRect(new DataRect(
+                    var newRect = new DataRect(
                         rect.XMin,
                         rect.YMin - dy,
                         rect.XMin + rect.Width,
-                        rect.YMin - dy + rect.Height));
+                        rect.YMin - dy + rect.Height);
+
+                    if (NavigationYIsInBounds(newRect, NavigationLimitMaxY, NavigationLimitMinY))
+                        masterPlot.SetPlotRect(newRect);
 
                     masterPlot.IsAutoFitEnabled = false;
                     e.Handled = true;
@@ -104,13 +155,16 @@ namespace InteractiveDataDisplay.WPF
                 if (e.Key == Key.Right && IsHorizontalNavigationEnabled)
                 {
                     var rect = masterPlot.PlotRect;
-                    double dx = - rect.Width / 200;
+                    double dx = -rect.Width / 200;
 
-                    masterPlot.SetPlotRect(new DataRect(
+                    var newRect = new DataRect(
                         rect.XMin + dx,
                         rect.YMin,
                         rect.XMin + dx + rect.Width,
-                        rect.YMin + rect.Height));
+                        rect.YMin + rect.Height);
+
+                    if (NavigationXIsInBounds(newRect, NavigationLimitMaxX, NavigationLimitMinX))
+                        masterPlot.SetPlotRect(newRect);
 
                     masterPlot.IsAutoFitEnabled = false;
                     e.Handled = true;
@@ -120,11 +174,14 @@ namespace InteractiveDataDisplay.WPF
                     var rect = masterPlot.PlotRect;
                     double dx = rect.Width / 200;
 
-                    masterPlot.SetPlotRect(new DataRect(
+                    var newRect = new DataRect(
                         rect.XMin + dx,
                         rect.YMin,
                         rect.XMin + dx + rect.Width,
-                        rect.YMin + rect.Height));
+                        rect.YMin + rect.Height);
+
+                    if (NavigationXIsInBounds(newRect, NavigationLimitMaxX, NavigationLimitMinX))
+                        masterPlot.SetPlotRect(newRect);
 
                     masterPlot.IsAutoFitEnabled = false;
                     e.Handled = true;
@@ -160,7 +217,9 @@ namespace InteractiveDataDisplay.WPF
                 if (IsVerticalNavigationEnabled)
                     rect.Y = rect.Y.Zoom(factor);
 
-                if (IsZoomEnable(rect))
+                if (IsZoomEnable(rect) 
+                    && NavigationXIsInBounds(rect, NavigationLimitMaxX, NavigationLimitMinX)
+                    && NavigationYIsInBounds(rect, NavigationLimitMaxY, NavigationLimitMinY))
                 {
                     masterPlot.SetPlotRect(rect);
                     masterPlot.IsAutoFitEnabled = false;
@@ -188,8 +247,8 @@ namespace InteractiveDataDisplay.WPF
 
         void KeyboardNavigationKeyUp(object sender, KeyEventArgs e)
         {
-        }       
-     }
+        }
+    }
 }
 
 

@@ -44,11 +44,19 @@
                                    ExtraPadding="{TemplateBinding BorderThickness}"
                                    Background="{TemplateBinding Background}">
                                 <d3:MouseNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
-                                                IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
-                                                x:Name="PART_mouseNavigation"/>
+                                                    IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                    NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                    NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                    NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                    NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                    x:Name="PART_mouseNavigation"/>
                                 <d3:KeyboardNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
-                                                   IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
-                                                   x:Name="PART_keyboardNavigation"/>
+                                                       IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                       NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                       NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                       NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                       NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                       x:Name="PART_keyboardNavigation"/>
                                 <d3:VerticalContentControl d3:Figure.Placement="Left"
                                                        Content="{TemplateBinding LeftTitle}"
                                                        VerticalAlignment="Center"
@@ -108,7 +116,11 @@
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
-        <d3:Chart Name="plotter" IsXAxisReversed="True">
+        <d3:Chart Name="plotter" 
+                  NavigationLimitMaxY="2.0"
+                  NavigationLimitMinY="-2.0"
+                  NavigationLimitMaxX="4.0"
+                  NavigationLimitMinX="-1.0">
             <d3:Chart.Title>
                 <TextBlock HorizontalAlignment="Center" FontSize="18" Margin="0,5,0,5">Line graph legend sample</TextBlock>
             </d3:Chart.Title>
