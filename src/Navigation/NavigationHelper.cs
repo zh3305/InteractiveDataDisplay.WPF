@@ -16,7 +16,7 @@ namespace InteractiveDataDisplay.WPF.Navigation
             double preferredAspectRatio, double aspectRatio)
         {
             bool returnToAvailableArea = NeedReturnToAvailableArea(
-                ref rect, navigationLimitMaxX, navigationLimitMinX, 
+                ref rect, navigationLimitMaxX, navigationLimitMinX,
                 navigationLimitMaxY, navigationLimitMinY);
 
             if (!returnToAvailableArea)
@@ -139,6 +139,16 @@ namespace InteractiveDataDisplay.WPF.Navigation
                 MathHelper.Clamp(rect.YMin, NavigationLimitMinY, NavigationLimitMaxY),
                 MathHelper.Clamp(rect.XMax, NavigationLimitMinX, NavigationLimitMaxX),
                 MathHelper.Clamp(rect.YMax, NavigationLimitMinY, NavigationLimitMaxY));
+
+                if (rect.XMin == rect.XMax 
+                    || rect.YMin == rect.YMax)
+                {
+                    rect = new DataRect(
+                        NavigationLimitMinX, 
+                        NavigationLimitMinY,
+                        NavigationLimitMaxX, 
+                        NavigationLimitMaxY);
+                }
                 return true;
             }
 
