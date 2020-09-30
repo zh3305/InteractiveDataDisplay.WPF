@@ -67,7 +67,6 @@
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Maps.MapControl.WPF" Version="1.0.0.3" />
     <PackageReference Include="System.Reactive" Version="3.1.1" Condition=" '$(TargetFramework)' == 'net452' " />
     <PackageReference Include="System.Reactive" Version="4.0.0" Condition=" '$(TargetFramework)' == 'net46' " />
   </ItemGroup>
