@@ -106,7 +106,7 @@ namespace InteractiveDataDisplay.WPF
         /// </summary>
         public static readonly DependencyProperty RangeProperty =
             DependencyProperty.Register("Range", typeof(Range), typeof(Axis), new PropertyMetadata(new Range(0, 1), 
-                (o,e) => 
+                (o, e) => 
                 {
                     Axis axis = (Axis)o;
                     if (axis != null)
@@ -132,7 +132,7 @@ namespace InteractiveDataDisplay.WPF
         /// </summary>
         public static readonly DependencyProperty AxisOrientationProperty =
             DependencyProperty.Register("AxisOrientation", typeof(AxisOrientation), typeof(Axis), new PropertyMetadata(AxisOrientation.Bottom, 
-                (o,e) => 
+                (o, e) => 
                 {
                     Axis axis = (Axis)o;
                     if (axis != null)
