@@ -341,6 +341,20 @@ namespace InteractiveDataDisplay.WPF
                 typeof(Chart), new PropertyMetadata(double.NegativeInfinity));
 
 
+        /// <summary>
+        /// Prererred aspect ratio which will be adjusted while zooming if availabe by navigation limits 
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public double PreferredAspectRatio
+        {
+            get { return (double)GetValue(PreferredAspectRatioProperty); }
+            set { SetValue(PreferredAspectRatioProperty, value); }
+        }
+
+        /// <summary>Identifies <see cref="PreferredAspectRatio"/> property</summary>
+        public static readonly DependencyProperty PreferredAspectRatioProperty =
+            DependencyProperty.Register("PreferredAspectRatio", typeof(double),
+                typeof(Chart), new PropertyMetadata(0.0));
 
 
 

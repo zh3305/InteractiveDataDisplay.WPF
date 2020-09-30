@@ -44,12 +44,12 @@ namespace InteractiveDataDisplay.WPF
 
             if (minimum < maximum)
             {
-                this.minimum = minimum; 
+                this.minimum = minimum;
                 this.maximum = maximum;
             }
             else
             {
-                this.minimum = maximum; 
+                this.minimum = maximum;
                 this.maximum = minimum;
             }
         }
@@ -95,7 +95,7 @@ namespace InteractiveDataDisplay.WPF
         /// <param name="range">Range, which will be used for current instance of range surrond</param>
         public void Surround(Range range)
         {
-            if (range.IsEmpty) 
+            if (range.IsEmpty)
                 return;
 
             Surround(range.minimum);
@@ -112,19 +112,28 @@ namespace InteractiveDataDisplay.WPF
         }
 
         /// <summary>
-        /// Calculates range from current which will have the same center and which size will be larger in factor times
+        /// Calculates range from current which size will be larger in factor times
         /// </summary>
         /// <param name="factor">Zoom factor</param>
         /// <returns>Zoomed with specified factor range</returns>
-        public Range Zoom(double factor)
+        public Range Zoom(double factor, double? cursor = null)
         {
             if (IsEmpty)
                 return new Range(true);
-            
-            double delta = (Max - Min) / 2;
-            double center = (Max + Min) / 2;
-            
-            return new Range(center - delta * factor, center + delta * factor);
+
+            if (cursor == null)
+            {
+                double delta = (Max - Min) / 2;
+                double center = (Max + Min) / 2;
+
+                return new Range(center - delta * factor, center + delta * factor);
+            }
+            else
+            {
+                double delta1 = cursor.Value - Min;
+                double delta2 = Max - cursor.Value;
+                return new Range(cursor.Value - delta1 * factor, cursor.Value + delta2 * factor);
+            }
         }
 
         /// <summary>
