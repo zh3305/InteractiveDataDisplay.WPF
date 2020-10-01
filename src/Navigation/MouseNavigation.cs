@@ -72,6 +72,8 @@ namespace InteractiveDataDisplay.WPF
             LayoutUpdated += (s, a) => transformChangeRequested = false;
         }
 
+        public event MouseEventHandler Click;
+
         /// <summary>Gets or sets vertical navigation status. True means that user can navigate along Y axis</summary>
         /// <remarks>The default value is true</remarks>
         [Category("InteractiveDataDisplay")]
@@ -392,7 +394,7 @@ namespace InteractiveDataDisplay.WPF
             {
                 if (wasInside && isLeftClicked)
                 {
-                    HandleMouseUp();
+                    HandleMouseUp(e);
                     HandleMouseDown(e);
                 }
             }
@@ -499,7 +501,7 @@ namespace InteractiveDataDisplay.WPF
 
         private void MouseNavigationLayer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = HandleMouseUp();
+            e.Handled = HandleMouseUp(e);
         }
 
         private bool CheckCursor(Point cursorPosition)
@@ -562,17 +564,20 @@ namespace InteractiveDataDisplay.WPF
             return true;
         }
 
-        private bool HandleMouseUp()
+        private bool HandleMouseUp(MouseEventArgs e)
         {
             isLeftClicked = false;
             isPanning = false;
-            if ((!isSelecting || !selectingStarted) && (Keyboard.Modifiers == ModifierKeys.Control))
+            if ((!isSelecting || !selectingStarted))
             {
                 DateTime d = DateTime.Now;
                 if ((d - lastClick).TotalMilliseconds < 300)
                 {
                     isSelecting = false;
-                    DoZoom(1 / 1.2);
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                        DoZoom(1 / 1.2);
+                    else if (Click != null)
+                        Click.Invoke(this, e);
                 }
             }
             if (isSelecting)

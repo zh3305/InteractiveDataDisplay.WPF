@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using InteractiveDataDisplay.WPF;
 
@@ -33,7 +34,27 @@ namespace LineGraphSample
                 lg.Description = String.Format("Data series {0}", i + 1);
                 lg.StrokeThickness = 2;
                 lg.Plot(x, x.Select(v => Math.Sin(v + i / 10.0)).ToArray());
+                lg.MouseDown += LineGraph_Clicked;
             }
+        }
+
+        private void PART_mouseNavigation_Click(object sender, MouseEventArgs e)
+        {
+            foreach (var lg in paintedLines)
+            {
+                lg.Stroke = Brushes.Green;
+            }
+        }
+
+        private HashSet<LineGraph> paintedLines = new HashSet<LineGraph>();
+        private void LineGraph_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            var lg = sender as LineGraph;
+            if (lg == null)
+                return;
+            lg.Stroke = Brushes.Red;
+            paintedLines.Add(lg);
+            e.Handled = true;
         }
     }
 
