@@ -157,6 +157,17 @@ namespace InteractiveDataDisplay.WPF
                 typeof(MouseNavigation), new PropertyMetadata(0.0));
 
 
+        [Category("InteractiveDataDisplay")]
+        public bool ZoomByShiftAndCtrl
+        {
+            get { return (bool)GetValue(ZoomByShiftAndCtrlProperty); }
+            set { SetValue(ZoomByShiftAndCtrlProperty, value); }
+        }
+
+        public static readonly DependencyProperty ZoomByShiftAndCtrlProperty =
+            DependencyProperty.Register("ZoomByShiftAndCtrl", typeof(bool),
+                typeof(MouseNavigation), new PropertyMetadata(true));
+
 
         void MouseNavigationUnloaded(object sender, RoutedEventArgs e)
         {
@@ -522,7 +533,8 @@ namespace InteractiveDataDisplay.WPF
                 {
                     if (Keyboard.Modifiers == ModifierKeys.Shift)
                     {
-                        DoZoom(1.2);
+                        if (ZoomByShiftAndCtrl)
+                            DoZoom(1.2);
                     }
                     else
                     {
@@ -574,7 +586,8 @@ namespace InteractiveDataDisplay.WPF
                 if ((d - lastClick).TotalMilliseconds < 300)
                 {
                     isSelecting = false;
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (Keyboard.Modifiers == ModifierKeys.Control
+                        && ZoomByShiftAndCtrl)
                         DoZoom(1 / 1.2);
                     else if (Click != null)
                         Click.Invoke(this, e);

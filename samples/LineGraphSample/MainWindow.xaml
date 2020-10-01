@@ -47,6 +47,7 @@
                                                     NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
                                                     NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
                                                     PreferredAspectRatio="{TemplateBinding PreferredAspectRatio}"
+                                                    ZoomByShiftAndCtrl="False"
                                                     Click="PART_mouseNavigation_Click"
                                                     x:Name="PART_mouseNavigation"/>
                                 <d3:KeyboardNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
