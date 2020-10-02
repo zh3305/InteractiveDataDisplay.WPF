@@ -140,15 +140,25 @@ namespace InteractiveDataDisplay.WPF.Navigation
                 MathHelper.Clamp(rect.XMax, NavigationLimitMinX, NavigationLimitMaxX),
                 MathHelper.Clamp(rect.YMax, NavigationLimitMinY, NavigationLimitMaxY));
 
-                if (rect.XMin == rect.XMax 
+                if (rect.XMin == rect.XMax
                     || rect.YMin == rect.YMax)
                 {
                     rect = new DataRect(
-                        NavigationLimitMinX, 
+                        NavigationLimitMinX,
                         NavigationLimitMinY,
-                        NavigationLimitMaxX, 
+                        NavigationLimitMaxX,
                         NavigationLimitMaxY);
                 }
+
+                if (double.IsInfinity(rect.XMax) || double.IsNaN(rect.XMax)
+                    || double.IsInfinity(rect.YMax) || double.IsNaN(rect.YMax)
+                    || double.IsInfinity(rect.XMin) || double.IsNaN(rect.XMin)
+                    || double.IsInfinity(rect.YMin) || double.IsNaN(rect.YMin))
+                {
+                    rect = new DataRect(0, 0, 1, 1);
+                }
+
+
                 return true;
             }
 
