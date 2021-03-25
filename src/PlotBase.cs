@@ -303,6 +303,8 @@ namespace InteractiveDataDisplay.WPF
                     PlotWidth = newMaster.PlotWidth;
                     PlotHeight = newMaster.PlotHeight;
                     IsAutoFitEnabled = newMaster.IsAutoFitEnabled;
+                    AutoFitScaleH = newMaster.AutoFitScaleH;
+                    AutoFitScaleW = newMaster.AutoFitScaleW;
                     IsInternalChange = false;
 
                     masterField = newMaster;
@@ -562,14 +564,14 @@ namespace InteractiveDataDisplay.WPF
                 }));
 
         /// <summary>Enables or disables clipping of graphic elements that are outside plotting area</summary>
-        public bool ClipToBounds
+        public new bool ClipToBounds
         {
             get { return (bool)GetValue(ClipToBoundsProperty); }
             set { SetValue(ClipToBoundsProperty, value); }
         }
 
         /// <summary>Identifies <see cref="ClipToBounds"/> dependency property</summary>
-        public static readonly DependencyProperty ClipToBoundsProperty =
+        public new static readonly DependencyProperty ClipToBoundsProperty =
             DependencyProperty.Register("ClipToBounds", typeof(bool), typeof(PlotBase), new PropertyMetadata(true,
                 (s, a) => ((PlotBase)s).OnClipToBoundsChanged(a)));
 
@@ -581,6 +583,36 @@ namespace InteractiveDataDisplay.WPF
         {
             InvalidateMeasure(); 
         }
+
+
+        /// <summary>
+        /// AutoFit Scale Height from 0-100 <see cref="AutoFitHScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleH
+        {
+            get { return (int)GetValue(AutoFitHScaleProperty); }
+            set { SetValue(AutoFitHScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitHScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutoFitHScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleH), typeof(int), typeof(PlotBase), new PropertyMetadata(100));
+
+
+        /// <summary>
+        /// AutoFit Scale Width from 0-100 <see cref="AutofitWScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleW
+        {
+            get { return (int)GetValue(AutofitWScaleProperty); }
+            set { SetValue(AutofitWScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitVScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutofitWScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleW), typeof(int), typeof(PlotBase), new PropertyMetadata(100));
+
+
 
         #endregion
 
@@ -928,11 +960,19 @@ namespace InteractiveDataDisplay.WPF
                 DataRect desiredRect;
                 if (IsAutoFitEnabled)
                 {
+                    //desiredRect = PlotRect;//AggregateBounds();
+                    //if (desiredRect.IsEmpty)
+                    //    desiredRect = new DataRect(0, 0, 1, 1);
+                    //desiredRect.X = desiredRect.X.Zoom(0.5);
+                    //desiredRect.Y = desiredRect.Y.Zoom(0.5);
+                    //SetPlotRect(desiredRect);
+
                     desiredRect = AggregateBounds();
                     if (desiredRect.IsEmpty)
                         desiredRect = new DataRect(0, 0, 1, 1);
 
                     SetPlotRect(desiredRect, true);
+
                 }
                 else // resize
                     desiredRect = PlotRect;

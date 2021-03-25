@@ -10,7 +10,7 @@ namespace InteractiveDataDisplay.WPF
 {
     /// <summary>This panel automatically builds legend for given <see cref="Plot"/></summary>
     [Description("Presents legend items for a plot")]    
-    public class LegendItemsPanel : Panel
+    public class LegendItemsPanel : StackPanel
     {
         private IDisposable unsubsrciber;
         private PlotBase masterPlot = null;
@@ -93,10 +93,25 @@ namespace InteractiveDataDisplay.WPF
             foreach (UIElement c in Children)
             {
                 c.Measure(availableSize);
-                result.Width = Math.Max(result.Width, c.DesiredSize.Width);
-                if (!Double.IsInfinity(availableSize.Height))
-                    availableSize.Height = Math.Max(0, availableSize.Height - c.DesiredSize.Height);
-                result.Height += c.DesiredSize.Height;
+                //result.Width = Math.Max(result.Width, c.DesiredSize.Width);
+                //if (!Double.IsInfinity(availableSize.Height))
+                //    availableSize.Height = Math.Max(0, availableSize.Height - c.DesiredSize.Height);
+                //result.Height += c.DesiredSize.Height;
+
+                if (Orientation == Orientation.Vertical)
+                {
+                    result.Width = Math.Max(result.Width, c.DesiredSize.Width);
+                    if (!Double.IsInfinity(availableSize.Height))
+                        availableSize.Height = Math.Max(0, availableSize.Height - c.DesiredSize.Height);
+                    result.Height += c.DesiredSize.Height;
+                }
+                else
+                {
+                    result.Height = Math.Max(result.Height, c.DesiredSize.Height);
+                    if (!Double.IsInfinity(availableSize.Width))
+                        availableSize.Width = Math.Max(0, availableSize.Width - c.DesiredSize.Width);
+                    result.Width += c.DesiredSize.Width;
+                }
             }
             return result;
         }
@@ -108,13 +123,26 @@ namespace InteractiveDataDisplay.WPF
         /// <returns>The actual size used.</returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            double y = 0;
-            foreach (UIElement c in Children)
+
+            if (Orientation == Orientation.Vertical)
             {
-                c.Arrange(new Rect(new Point(0, y), c.DesiredSize));
-                y += c.DesiredSize.Height;
+                double y = 0;
+                foreach (UIElement c in Children)
+                {
+                    c.Arrange(new Rect(new Point(0, y), c.DesiredSize));
+                    y += c.DesiredSize.Height;
+                }
             }
-            return finalSize;
+            else
+            {
+                double x = 0;
+                foreach (UIElement c in Children)
+                {
+                    c.Arrange(new Rect(new Point(x, 0), c.DesiredSize));
+                    x += c.DesiredSize.Width;
+                }
+            }
+             return finalSize;
         }
 
         /// <summary>

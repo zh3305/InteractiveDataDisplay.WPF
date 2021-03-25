@@ -328,5 +328,89 @@ namespace InteractiveDataDisplay.WPF
             set { SetValue(IsYAxisReversedProperty, value); }
         }
 
-    }       
+       /// <summary>Gets or sets X Label provider</summary>
+        [Category("InteractiveDataDisplay")]
+        public ILabelProvider XLabelProvider
+        {
+            get { return (ILabelProvider)GetValue(XLabelProviderProperty); }
+            set { SetValue(XLabelProviderProperty, value); }
+        }
+
+        /// <summary>Identifies <see cref="XLabelProvider"/> property</summary>
+        public static readonly DependencyProperty XLabelProviderProperty =
+            DependencyProperty.Register("XLabelProvider", typeof(ILabelProvider), typeof(Chart), new PropertyMetadata(new LabelProvider()));
+
+        /// <summary>Gets or sets Y Label provider</summary>
+        [Category("InteractiveDataDisplay")]
+        public ILabelProvider YLabelProvider
+        {
+            get { return (ILabelProvider)GetValue(YLabelProviderProperty); }
+            set { SetValue(YLabelProviderProperty, value); }
+        }
+
+        /// <summary>Identifies <see cref="YLabelProvider"/> property</summary>
+        public static readonly DependencyProperty YLabelProviderProperty =
+            DependencyProperty.Register("YLabelProvider", typeof(ILabelProvider), typeof(Chart), new PropertyMetadata(new LabelProvider()));
+
+        /// <summary>
+        /// Gets or sets visibility of XAxis
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public Visibility XAxisVisibility
+        {
+            get { return (Visibility)GetValue(XAxisVisibilityProperty); }
+            set { SetValue(XAxisVisibilityProperty, value); }
+        }
+
+        /// <summary>
+        /// Identifies <see cref="XAxisVisibility"/> dependency property
+        /// </summary>
+        public static readonly DependencyProperty XAxisVisibilityProperty =
+            DependencyProperty.Register(nameof(XAxisVisibility), typeof(Visibility), typeof(Chart), new PropertyMetadata(Visibility.Visible));
+        
+        /// <summary>
+        /// Gets or sets visibility of YAxis
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public Visibility YAxisVisibility
+        {
+            get { return (Visibility)GetValue(YAxisVisibilityProperty); }
+            set { SetValue(YAxisVisibilityProperty, value); }
+        }
+
+        /// <summary>
+        /// Identifies <see cref="YAxisVisibility"/> dependency property
+        /// </summary>
+        public static readonly DependencyProperty YAxisVisibilityProperty =
+            DependencyProperty.Register(nameof(YAxisVisibility), typeof(Visibility), typeof(Chart), new PropertyMetadata(Visibility.Visible));
+
+        /// <summary>
+        /// AutoFit Scale Height from 0-100 <see cref="AutoFitHScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleH
+        {
+            get { return (int)GetValue(AutoFitHScaleProperty); }
+            set { SetValue(AutoFitHScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitHScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutoFitHScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleH), typeof(int), typeof(Chart), new PropertyMetadata(100));
+
+
+        /// <summary>
+        /// AutoFit Scale Width from 0-100 <see cref="AutofitWScaleProperty"/> dependency property
+        /// </summary>
+        public int AutoFitScaleW
+        {
+            get { return (int)GetValue(AutofitWScaleProperty); }
+            set { SetValue(AutofitWScaleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutofitVScale.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutofitWScaleProperty =
+            DependencyProperty.Register(nameof(AutoFitScaleW), typeof(int), typeof(Chart), new PropertyMetadata(100));
+
+
+    }
 }

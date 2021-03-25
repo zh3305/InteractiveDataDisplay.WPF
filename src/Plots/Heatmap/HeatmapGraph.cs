@@ -198,7 +198,7 @@ namespace InteractiveDataDisplay.WPF
         public Range PaletteRange
         {
             get { return (Range)GetValue(PaletteRangeProperty); }
-            protected set
+            set
             {
                 try
                 {

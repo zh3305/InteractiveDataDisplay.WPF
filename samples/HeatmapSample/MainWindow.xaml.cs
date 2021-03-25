@@ -19,8 +19,10 @@ namespace HeatmapSample
         private Thread thread;
         private double phase = 0;
 
-        const int N = 1000;
-        const int M = 500;
+        const int N = 24;
+        const int M = 32;
+        const int min = 30;
+        const int max = 45;
 
         double[] x = new double[N + 1];
         double[] y = new double[M + 1];
@@ -56,13 +58,17 @@ namespace HeatmapSample
             for (int j = 0; j <= M; j++)
                 y[j] = -Math.PI / 2 + j * Math.PI / M;
 
+            Random random = new Random();
             while (!isUnloaded) // Run until page is on the screen
             {
                 // Data array is updated
                 for (int i = 0; i < N; i++)
                     for (int j = 0; j < M; j++)
-                        f[i, j] = Math.Sqrt(x[i] * x[i] + y[j] * y[j]) * Math.Abs(Math.Cos(x[i] * x[i] + y[j] * y[j] + phase));
-                phase += 0.1;
+                        f[i, j] = random.Next(min, max);
+                //f[i, j] = Math.Sqrt(x[i] * x[i] + y[j] * y[j]) * Math.Abs(Math.Cos(x[i] * x[i] + y[j] * y[j] + phase));
+                //phase += 0.003;
+                Thread.Sleep(5000);
+                
 
                 // Uncomment next line to simulate delay in computations
                 // Thread.Sleep(1000);
