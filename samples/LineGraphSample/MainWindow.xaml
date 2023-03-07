@@ -9,10 +9,122 @@
         Title="Line graph" Height="600" Width="800">
     <Window.Resources>
         <local:VisibilityToCheckedConverter x:Key="VisibilityToCheckedConverter"/>
+
+        <Style x:Key="timeAxisStyle" TargetType="d3:PlotAxis">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="d3:PlotAxis">
+                        <Grid>
+                            <local:CustomAxis x:Name="PART_Axis" 
+                                 AxisOrientation="{Binding AxisOrientation, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                 Ticks="{Binding Ticks, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                 Foreground="{Binding Foreground, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <ContentPresenter/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="IsTabStop" Value="False"/>
+        </Style>
+        <Style TargetType="d3:Chart">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="d3:Chart">
+                        <Grid>
+                            <d3:Figure x:Name="PART_figure" Margin="1"
+                                   PlotHeight="{Binding PlotHeight, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   PlotWidth="{Binding PlotWidth, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   PlotOriginX="{Binding PlotOriginX, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   PlotOriginY="{Binding PlotOriginY, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   IsAutoFitEnabled="{Binding IsAutoFitEnabled, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   AspectRatio="{Binding AspectRatio, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   ExtraPadding="{TemplateBinding BorderThickness}"
+                                   Background="{TemplateBinding Background}">
+                                <d3:MouseNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
+                                                    IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                    NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                    NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                    NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                    NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                    PreferredAspectRatio="{TemplateBinding PreferredAspectRatio}"
+                                                    ZoomByShiftAndCtrl="False"
+                                                    Click="PART_mouseNavigation_Click"
+                                                    x:Name="PART_mouseNavigation"/>
+                                <d3:KeyboardNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
+                                                       IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                       NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                       NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                       NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                       NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                       PreferredAspectRatio="{TemplateBinding PreferredAspectRatio}"
+                                                       x:Name="PART_keyboardNavigation"/>
+                                <d3:VerticalContentControl d3:Figure.Placement="Left"
+                                                       Content="{TemplateBinding LeftTitle}"
+                                                       VerticalAlignment="Center"
+                                                       IsTabStop="False"/>
+                                <d3:PlotAxis x:Name="PART_verticalAxis"
+                                         d3:Figure.Placement="Left" 
+                                         AxisOrientation="Left"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         Style="{StaticResource timeAxisStyle}">
+                                    <d3:MouseNavigation IsHorizontalNavigationEnabled="False"
+                                                        NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                        NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"/>
+                                </d3:PlotAxis>
+                                <d3:AxisGrid x:Name="PART_axisGrid"
+                                         VerticalTicks="{Binding Ticks,ElementName=PART_verticalAxis, Mode=OneWay}"
+                                         HorizontalTicks="{Binding Ticks,ElementName=PART_horizontalAxis, Mode=OneWay}"
+                                         Stroke="{TemplateBinding Foreground}" Opacity="0.25"/>
+                                <ContentControl d3:Figure.Placement="Top" 
+                                            HorizontalAlignment="Center"
+                                            FontSize="16"
+                                            Content="{TemplateBinding Title}"
+                                            Foreground="{TemplateBinding Foreground}"
+                                            IsTabStop="False"/>
+                                <ContentControl d3:Figure.Placement="Bottom" 
+                                            HorizontalAlignment="Center"
+                                            Content="{TemplateBinding BottomTitle}"
+                                            Foreground="{TemplateBinding Foreground}"
+                                            IsTabStop="False"/>
+                                <d3:VerticalContentControl d3:Figure.Placement="Right"
+                                                       Content="{TemplateBinding RightTitle}"
+                                                       VerticalAlignment="Center"
+                                                       IsTabStop="False"/>
+                                <d3:PlotAxis x:Name="PART_horizontalAxis"
+                                         d3:Figure.Placement="Bottom" 
+                                         AxisOrientation="Bottom"
+                                         Foreground="{TemplateBinding Foreground}">
+                                    <d3:MouseNavigation IsVerticalNavigationEnabled="False"
+                                                        NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                        NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"/>
+                                </d3:PlotAxis>
+                                <ContentPresenter/>
+                                <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding Foreground}" d3:Figure.Placement="Center"/>
+                                <d3:Legend x:Name="PART_legend" 
+                                       Foreground="Black" Content="{TemplateBinding LegendContent}"
+                                       Visibility="{TemplateBinding LegendVisibility}"/>
+                            </d3:Figure>
+                            <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="IsTabStop" Value="False"/>
+        </Style>
+
+
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
-        <d3:Chart Name="plotter" IsXAxisReversed="True">
+        <d3:Chart Name="plotter"  IsXAxisReversed="True"
+                  NavigationLimitMaxY="2.0"
+                  NavigationLimitMinY="-2.0"
+                  NavigationLimitMaxX="1800.0"
+                  NavigationLimitMinX="-100.0"
+                  PreferredAspectRatio ="0.5"
+                  >
+            <!--AspectRatio="0.5"-->
             <d3:Chart.Title>
                 <TextBlock HorizontalAlignment="Center" FontSize="18" Margin="0,5,0,5">Line graph legend sample</TextBlock>
             </d3:Chart.Title>

@@ -273,7 +273,7 @@ namespace InteractiveDataDisplay.WPF
             {
                 dependantsField.Add(dependant);
                 EnumAll(plot => plot.NotifyCompositionChange());
-          }
+            }
         }
 
         private void RemoveDependant(PlotBase dependant)
@@ -337,7 +337,7 @@ namespace InteractiveDataDisplay.WPF
         {
             if (masterField != this)
             {
-                if(masterField != null)
+                if (masterField != null)
                     masterField.EnumAll(action);
             }
             else
@@ -469,7 +469,7 @@ namespace InteractiveDataDisplay.WPF
                         if (!plotBase.IsMaster)
                         {
                             plotBase.masterField.InvalidateMeasure();
-                        } 
+                        }
                         else
                             plotBase.InvalidateMeasure();
                     }
@@ -581,7 +581,7 @@ namespace InteractiveDataDisplay.WPF
         /// <param name="args">PropertyChanged parameters</param>
         protected virtual void OnClipToBoundsChanged(DependencyPropertyChangedEventArgs args)
         {
-            InvalidateMeasure(); 
+            InvalidateMeasure();
         }
 
 
@@ -626,14 +626,14 @@ namespace InteractiveDataDisplay.WPF
             if (!IsInternalChange)
             {
                 IsInternalChange = true;
-                EnumAll(p => 
-                { 
+                EnumAll(p =>
+                {
                     p.PlotOriginX = (double)e.NewValue;
                     p.IsAutoFitEnabled = false;
                     p.InvalidateMeasure();
                 });
                 IsInternalChange = false;
-            }  
+            }
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace InteractiveDataDisplay.WPF
                     p.InvalidateMeasure();
                 });
                 IsInternalChange = false;
-            } 
+            }
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace InteractiveDataDisplay.WPF
                     p.InvalidateMeasure();
                 });
                 IsInternalChange = false;
-            } 
+            }
         }
 
         /// <summary>
@@ -859,7 +859,7 @@ namespace InteractiveDataDisplay.WPF
                     p.InvalidateMeasure();
                 }
             });
-                 
+
             IsInternalChange = false;
         }
 
@@ -869,6 +869,12 @@ namespace InteractiveDataDisplay.WPF
         /// <param name="plotRect">plot rectangle value that would be set for current instance of <see cref="PlotBase"/></param>
         public void SetPlotRect(DataRect plotRect)
         {
+            if (double.IsInfinity(plotRect.XMax) || double.IsNaN(plotRect.XMax)
+                    || double.IsInfinity(plotRect.YMax) || double.IsNaN(plotRect.YMax)
+                    || double.IsInfinity(plotRect.XMin) || double.IsNaN(plotRect.XMin)
+                    || double.IsInfinity(plotRect.YMin) || double.IsNaN(plotRect.YMin))
+                return;
+
             SetPlotRect(plotRect, false);
         }
 
@@ -953,7 +959,7 @@ namespace InteractiveDataDisplay.WPF
             if (double.IsNaN(availableSize.Width)
                 || double.IsNaN(availableSize.Height)
                 || double.IsInfinity(availableSize.Width)
-                || double.IsInfinity(availableSize.Height)) 
+                || double.IsInfinity(availableSize.Height))
                 availableSize = new Size(100, 100);
             if (IsMaster)
             {

@@ -85,38 +85,6 @@ namespace InteractiveDataDisplay.WPF
         }
 
         /// <summary>
-        /// Identifies <see cref="IsXAxisReversed"/> dependency property
-        /// </summary>
-        public static readonly DependencyProperty IsXAxisReversedProperty =
-            DependencyProperty.Register("IsXAxisReversed", typeof(bool), typeof(AxisGrid), new PropertyMetadata(false));
-
-        /// <summary>
-        /// Gets or sets a flag indicating whether the x-axis is reversed or not.
-        /// </summary>
-        [Category("InteractiveDataDisplay")]
-        public bool IsXAxisReversed
-        {
-            get { return (bool)GetValue(IsXAxisReversedProperty); }
-            set { SetValue(IsXAxisReversedProperty, value); }
-        }
-
-        /// <summary>
-        /// Identifies <see cref="IsYAxisReversed"/> dependency property
-        /// </summary>
-        public static readonly DependencyProperty IsYAxisReversedProperty =
-            DependencyProperty.Register("IsYAxisReversed", typeof(bool), typeof(AxisGrid), new PropertyMetadata(false));
-
-        /// <summary>
-        /// Gets or sets a flag indicating whether the y-axis is reversed or not.
-        /// </summary>
-        [Category("InteractiveDataDisplay")]
-        public bool IsYAxisReversed
-        {
-            get { return (bool)GetValue(IsYAxisReversedProperty); }
-            set { SetValue(IsYAxisReversedProperty, value); }
-        }
-
-        /// <summary>
         /// Gets or sets the Brush that specifies how the horizontal and vertical lines is painted
         /// </summary>
         [Category("Appearance")]
@@ -219,20 +187,18 @@ namespace InteractiveDataDisplay.WPF
 
         private double GetHorizontalCoordinateFromTick(double tick, double screenSize, Range range)
         {
-            return ValueToScreen(XDataTransform.DataToPlot(tick), screenSize, range, IsXAxisReversed);
+            return ValueToScreen(XDataTransform.DataToPlot(tick), screenSize, range);
         }
 
         private double GetVerticalCoordinateFromTick(double tick, double screenSize, Range range)
         {
-            return  screenSize - ValueToScreen(YDataTransform.DataToPlot(tick), screenSize, range, IsYAxisReversed);
+            return  screenSize - ValueToScreen(YDataTransform.DataToPlot(tick), screenSize, range);
         }
 
 
-        private static double ValueToScreen(double value, double dimensionSize, Range range, bool isReversed)
+        private static double ValueToScreen(double value, double dimensionSize, Range range)
         {
-            var bound1 = isReversed ? range.Max : range.Min;
-            var bound2 = isReversed ? range.Min : range.Max;
-            return (value - bound1) * dimensionSize / (bound2 - bound1);
+            return (value - range.Min) * dimensionSize / (range.Max - range.Min);
         }
     }
 }

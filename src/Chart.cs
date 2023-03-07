@@ -296,6 +296,68 @@ namespace InteractiveDataDisplay.WPF
         public static readonly DependencyProperty IsHorizontalNavigationEnabledProperty =
             DependencyProperty.Register("IsHorizontalNavigationEnabled", typeof(bool), typeof(Chart), new PropertyMetadata(true));
 
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxY
+        {
+            get { return (double)GetValue(NavigationLimitMaxYProperty); }
+            set { SetValue(NavigationLimitMaxYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxYProperty =
+            DependencyProperty.Register("NavigationLimitMaxY", typeof(double), 
+                typeof(Chart), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinY
+        {
+            get { return (double)GetValue(NavigationLimitMinYProperty); }
+            set { SetValue(NavigationLimitMinYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinYProperty =
+            DependencyProperty.Register("NavigationLimitMinY", typeof(double),
+                typeof(Chart), new PropertyMetadata(double.NegativeInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxX
+        {
+            get { return (double)GetValue(NavigationLimitMaxXProperty); }
+            set { SetValue(NavigationLimitMaxXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxXProperty =
+            DependencyProperty.Register("NavigationLimitMaxX", typeof(double),
+                typeof(Chart), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinX
+        {
+            get { return (double)GetValue(NavigationLimitMinXProperty); }
+            set { SetValue(NavigationLimitMinXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinXProperty =
+            DependencyProperty.Register("NavigationLimitMinX", typeof(double),
+                typeof(Chart), new PropertyMetadata(double.NegativeInfinity));
+
+
+        /// <summary>
+        /// Prererred aspect ratio which will be adjusted while zooming if availabe by navigation limits 
+        /// </summary>
+        [Category("InteractiveDataDisplay")]
+        public double PreferredAspectRatio
+        {
+            get { return (double)GetValue(PreferredAspectRatioProperty); }
+            set { SetValue(PreferredAspectRatioProperty, value); }
+        }
+
+        /// <summary>Identifies <see cref="PreferredAspectRatio"/> property</summary>
+        public static readonly DependencyProperty PreferredAspectRatioProperty =
+            DependencyProperty.Register("PreferredAspectRatio", typeof(double),
+                typeof(Chart), new PropertyMetadata(0.0));
+
+
+
         /// <summary>
         /// Identifies <see cref="IsXAxisReversed"/> dependency property
         /// </summary>

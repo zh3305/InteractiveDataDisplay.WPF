@@ -14,7 +14,6 @@
                     <Grid>
                         <d3:Axis x:Name="PART_Axis" 
                                  AxisOrientation="{Binding AxisOrientation, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                 IsReversed="{Binding IsReversed, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                  Ticks="{Binding Ticks, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                  Foreground = "{Binding Foreground, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                  LabelProvider = "{Binding LabelProvider, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -48,9 +47,19 @@
                                    Padding="{TemplateBinding Padding}">
                             <d3:MouseNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
                                                 IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                PreferredAspectRatio="{TemplateBinding PreferredAspectRatio}"
                                                 x:Name="PART_mouseNavigation"/>
                             <d3:KeyboardNavigation IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"
                                                    IsHorizontalNavigationEnabled="{TemplateBinding IsHorizontalNavigationEnabled}"
+                                                   NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                   NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"
+                                                   NavigationLimitMaxX="{TemplateBinding NavigationLimitMaxX}"
+                                                   NavigationLimitMinX="{TemplateBinding NavigationLimitMinX}"
+                                                   PreferredAspectRatio="{TemplateBinding PreferredAspectRatio}"
                                                    x:Name="PART_keyboardNavigation"/>
                             <d3:VerticalContentControl d3:Figure.Placement="Left"
                                                        Content="{TemplateBinding LeftTitle}"
@@ -63,7 +72,9 @@
 										 LabelProvider="{TemplateBinding YLabelProvider}"
                                          Visibility="{Binding YAxisVisibility, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          Foreground="{TemplateBinding Foreground}">
-                                <d3:MouseNavigation IsHorizontalNavigationEnabled="False" IsVerticalNavigationEnabled="{TemplateBinding IsVerticalNavigationEnabled}"/>
+                                <d3:MouseNavigation IsHorizontalNavigationEnabled="False"
+                                                    NavigationLimitMaxY="{TemplateBinding NavigationLimitMaxY}"
+                                                    NavigationLimitMinY="{TemplateBinding NavigationLimitMinY}"/>
                             </d3:PlotAxis>
                             <d3:AxisGrid x:Name="PART_axisGrid"
                                          VerticalTicks="{Binding Ticks,ElementName=PART_verticalAxis, Mode=OneWay}"

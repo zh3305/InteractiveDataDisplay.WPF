@@ -2,9 +2,13 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using InteractiveDataDisplay.WPF;
 
@@ -35,8 +39,60 @@ namespace LineGraphSample
                 lg.Description = String.Format("Data series {0}", i + 1);
                 lg.StrokeThickness = 2;
                 lg.Plot(dates, x.Select(v => Math.Sin(v + i / 10.0)).ToArray());
+                lg.MouseDown += LineGraph_Clicked;
             }
-            plotter.XLabelProvider = new DateLabelProvider();
+            // plotter.XLabelProvider = new DateLabelProvider();
+        }
+
+        private void PART_mouseNavigation_Click(object sender, MouseEventArgs e)
+        {
+            foreach (var lg in paintedLines)
+            {
+                lg.Stroke = Brushes.Green;
+            }
+        }
+
+        private HashSet<LineGraph> paintedLines = new HashSet<LineGraph>();
+        private void LineGraph_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            var lg = sender as LineGraph;
+            if (lg == null)
+                return;
+            lg.Stroke = Brushes.Red;
+            paintedLines.Add(lg);
+            e.Handled = true;
+        }
+    }
+
+    public class CustomLabelProvider : ILabelProvider
+    {
+        public static DateTime Origin = new DateTime(2000, 1, 1);
+
+        public FrameworkElement[] GetLabels(double[] ticks)
+        {
+            if (ticks == null)
+                throw new ArgumentNullException("ticks");
+
+
+            List<TextBlock> Labels = new List<TextBlock>();
+            foreach (double tick in ticks)
+            {
+                TextBlock text = new TextBlock();
+                var time = Origin + TimeSpan.FromDays(tick);
+                if(time.Hour!=0)
+                    text.Text = null;
+                else
+                    text.Text = time.ToString("dd.MM.yyyy");
+                Labels.Add(text);
+            }
+            return Labels.ToArray();
+        }
+    }
+
+    public class CustomAxis : Axis
+    {
+        public CustomAxis() : base(new CustomLabelProvider(), new TicksProvider())
+        {
         }
     }
 

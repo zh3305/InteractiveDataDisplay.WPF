@@ -87,7 +87,7 @@ namespace InteractiveDataDisplay.WPF
         /// </summary>
         public static readonly DependencyProperty TicksProperty =
             DependencyProperty.Register("Ticks", typeof(IEnumerable<double>), typeof(Axis), new PropertyMetadata(new double[0]));
-
+                
         /// <summary>
         /// Gets or sets the range of values on axis in plot coordinates.
         /// </summary>
@@ -105,8 +105,8 @@ namespace InteractiveDataDisplay.WPF
         /// Identifies the <see cref="Range"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty RangeProperty =
-            DependencyProperty.Register("Range", typeof(Range), typeof(Axis), new PropertyMetadata(new Range(0, 1),
-                (o, e) =>
+            DependencyProperty.Register("Range", typeof(Range), typeof(Axis), new PropertyMetadata(new Range(0, 1), 
+                (o, e) => 
                 {
                     Axis axis = (Axis)o;
                     if (axis != null)
@@ -131,33 +131,8 @@ namespace InteractiveDataDisplay.WPF
         /// Identifies the <see cref="AxisOrientation"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty AxisOrientationProperty =
-            DependencyProperty.Register("AxisOrientation", typeof(AxisOrientation), typeof(Axis), new PropertyMetadata(AxisOrientation.Bottom,
-                (o, e) =>
-                {
-                    Axis axis = (Axis)o;
-                    if (axis != null)
-                    {
-                        axis.InvalidateMeasure();
-                    }
-                }));
-
-        /// <summary>
-        /// Gets or sets a flag indicating whether the axis is reversed or not.
-        /// </summary>
-        /// <remarks>Axis is not reversed by default.</remarks>
-        [Category("InteractiveDataDisplay")]
-        [Description("Defines orientation of axis and location of labels")]
-        public bool IsReversed
-        {
-            get { return (bool)GetValue(IsReversedProperty); }
-            set { SetValue(IsReversedProperty, value); }
-        }
-        /// <summary>
-        /// Identifies the <see cref="IsReversed"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty IsReversedProperty =
-            DependencyProperty.Register("IsReversed", typeof(bool), typeof(Axis), new PropertyMetadata(false,
-                (o, e) =>
+            DependencyProperty.Register("AxisOrientation", typeof(AxisOrientation), typeof(Axis), new PropertyMetadata(AxisOrientation.Bottom, 
+                (o, e) => 
                 {
                     Axis axis = (Axis)o;
                     if (axis != null)
@@ -383,7 +358,7 @@ namespace InteractiveDataDisplay.WPF
             {
                 int start = 0;
                 if (cTicks.Length > 0 && cTicks[0] < Range.Min) start++;
-
+                
                 if (Range.IsPoint)
                     drawMinorTicks = false;
 
@@ -402,7 +377,7 @@ namespace InteractiveDataDisplay.WPF
                         line.StartPoint = new Point(0, GetCoordinateFromTick(cTicks[i], axisSize));
                         line.EndPoint = new Point(tickLength, GetCoordinateFromTick(cTicks[i], axisSize));
                     }
-
+                    
                     if (labels[i] is TextBlock)
                     {
                         (labels[i] as TextBlock).Foreground = Foreground;
@@ -411,7 +386,7 @@ namespace InteractiveDataDisplay.WPF
                     {
                         (labels[i] as Control).Foreground = Foreground;
                     }
-
+                    
                     Children.Add(labels[i]);
                 }
 
@@ -505,7 +480,7 @@ namespace InteractiveDataDisplay.WPF
 
             Size effectiveSize = availableSize;
 
-
+            
             ClearLabels();
             CreateTicks(effectiveSize);
 
@@ -633,26 +608,22 @@ namespace InteractiveDataDisplay.WPF
 
         private double GetCoordinateFromTick(double tick, Size screenSize)
         {
-            return ValueToScreen(DataTransform.DataToPlot(tick), screenSize, Range);
+            return ValueToScreen(DataTransform.DataToPlot(tick), screenSize, Range); 
         }
 
         private double ValueToScreen(double value, Size screenSize, Range range)
         {
-            double leftBound, rightBound, topBound, bottomBound;
-            leftBound = bottomBound = IsReversed ? range.Max : range.Min;
-            rightBound = topBound = IsReversed ? range.Min : range.Max;
-
             if (IsHorizontal)
             {
-                return range.IsPoint ?
+                return range.IsPoint ? 
                     (screenSize.Width / 2) :
-                    ((value - leftBound) * screenSize.Width / (rightBound - leftBound));
+                    ((value - range.Min) * screenSize.Width / (range.Max - range.Min));
             }
             else
             {
                 return range.IsPoint ?
                     (screenSize.Height / 2) :
-                    (screenSize.Height - (value - leftBound) * screenSize.Height / (rightBound - leftBound));
+                    (screenSize.Height - (value - range.Min) * screenSize.Height / (range.Max - range.Min));
             }
         }
 

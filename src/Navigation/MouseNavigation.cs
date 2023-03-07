@@ -8,6 +8,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using static InteractiveDataDisplay.WPF.Navigation.NavigationHelper;
+using InteractiveDataDisplay.WPF.Navigation;
 
 namespace InteractiveDataDisplay.WPF
 {
@@ -70,6 +72,8 @@ namespace InteractiveDataDisplay.WPF
             LayoutUpdated += (s, a) => transformChangeRequested = false;
         }
 
+        public event MouseEventHandler Click;
+
         /// <summary>Gets or sets vertical navigation status. True means that user can navigate along Y axis</summary>
         /// <remarks>The default value is true</remarks>
         [Category("InteractiveDataDisplay")]
@@ -95,6 +99,75 @@ namespace InteractiveDataDisplay.WPF
         /// <summary>Identifies <see cref="IsHorizontalNavigationEnabled"/> property</summary>
         public static readonly DependencyProperty IsHorizontalNavigationEnabledProperty =
             DependencyProperty.Register("IsHorizontalNavigationEnabled", typeof(bool), typeof(MouseNavigation), new PropertyMetadata(true));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxY
+        {
+            get { return (double)GetValue(NavigationLimitMaxYProperty); }
+            set { SetValue(NavigationLimitMaxYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxYProperty =
+            DependencyProperty.Register("NavigationLimitMaxY", typeof(double),
+                typeof(MouseNavigation), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinY
+        {
+            get { return (double)GetValue(NavigationLimitMinYProperty); }
+            set { SetValue(NavigationLimitMinYProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinYProperty =
+            DependencyProperty.Register("NavigationLimitMinY", typeof(double),
+                typeof(MouseNavigation), new PropertyMetadata(double.NegativeInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMaxX
+        {
+            get { return (double)GetValue(NavigationLimitMaxXProperty); }
+            set { SetValue(NavigationLimitMaxXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMaxXProperty =
+            DependencyProperty.Register("NavigationLimitMaxX", typeof(double),
+                typeof(MouseNavigation), new PropertyMetadata(double.PositiveInfinity));
+
+        [Category("InteractiveDataDisplay")]
+        public double NavigationLimitMinX
+        {
+            get { return (double)GetValue(NavigationLimitMinXProperty); }
+            set { SetValue(NavigationLimitMinXProperty, value); }
+        }
+
+        public static readonly DependencyProperty NavigationLimitMinXProperty =
+            DependencyProperty.Register("NavigationLimitMinX", typeof(double),
+                typeof(MouseNavigation), new PropertyMetadata(double.NegativeInfinity));
+
+
+        [Category("InteractiveDataDisplay")]
+        public double PreferredAspectRatio
+        {
+            get { return (double)GetValue(PreferredAspectRatioProperty); }
+            set { SetValue(PreferredAspectRatioProperty, value); }
+        }
+
+        public static readonly DependencyProperty PreferredAspectRatioProperty =
+            DependencyProperty.Register("PreferredAspectRatio", typeof(double),
+                typeof(MouseNavigation), new PropertyMetadata(0.0));
+
+
+        [Category("InteractiveDataDisplay")]
+        public bool ZoomByShiftAndCtrl
+        {
+            get { return (bool)GetValue(ZoomByShiftAndCtrlProperty); }
+            set { SetValue(ZoomByShiftAndCtrlProperty, value); }
+        }
+
+        public static readonly DependencyProperty ZoomByShiftAndCtrlProperty =
+            DependencyProperty.Register("ZoomByShiftAndCtrl", typeof(bool),
+                typeof(MouseNavigation), new PropertyMetadata(true));
+
 
         void MouseNavigationUnloaded(object sender, RoutedEventArgs e)
         {
@@ -157,22 +230,40 @@ namespace InteractiveDataDisplay.WPF
             return finalSize;
         }
 
-        private void DoZoom(double factor)
+        private void MouseNavigationLayer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Point cursorPosition = e.GetPosition(this);
+            if (!CheckCursor(cursorPosition))
+                return;
+
+            //Zoom relative to mouse position
+            double factor = e.Delta < 0 ? 1.2 : 1 / 1.2;
+            Point mousePos = new Point(
+                masterPlot.XFromLeft(cursorPosition.X),
+                masterPlot.YFromTop(cursorPosition.Y));
+            DoZoom(factor, mousePos);
+            e.Handled = true;
+        }
+
+        private void DoZoom(double factor, Point? mousePos = null)
         {
             if (masterPlot != null)
             {
                 var rect = masterPlot.PlotRect;
 
-                if (IsHorizontalNavigationEnabled)
-                    rect.X = rect.X.Zoom(factor);
-                if (IsVerticalNavigationEnabled)
-                    rect.Y = rect.Y.Zoom(factor);
+                ValidateNavigationLimits();
+                rect = NavigationHelper.DoZoom(factor, mousePos, rect,
+                    NavigationLimitMaxX, NavigationLimitMinX,
+                    NavigationLimitMaxY, NavigationLimitMinY,
+                    IsHorizontalNavigationEnabled, IsVerticalNavigationEnabled,
+                    PreferredAspectRatio, masterPlot.AspectRatio);
 
                 if (IsZoomEnable(rect))
                 {
                     masterPlot.SetPlotRect(rect);
                     masterPlot.IsAutoFitEnabled = false;
                 }
+
             }
         }
 
@@ -194,16 +285,20 @@ namespace InteractiveDataDisplay.WPF
             return res;
         }
 
-        private void MouseNavigationLayer_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void ValidateNavigationLimits()
         {
-            Point cursorPosition = e.GetPosition(this);
-            if (!CheckCursor(cursorPosition))
-                return;
+            //checks navigation limits and reset if not valid
+            if (NavigationLimitMaxX <= NavigationLimitMinX)
+            {
+                NavigationLimitMaxX = double.PositiveInfinity;
+                NavigationLimitMinX = double.NegativeInfinity;
+            }
 
-            // TODO: Zoom relative to mouse position
-            double factor = e.Delta < 0 ? 1.2 : 1 / 1.2;
-            DoZoom(factor);
-            e.Handled = true;
+            if (NavigationLimitMaxY <= NavigationLimitMinY)
+            {
+                NavigationLimitMaxY = double.PositiveInfinity;
+                NavigationLimitMinY = double.NegativeInfinity;
+            }
         }
 
         private void DoPan(Point screenStart, Point screenEnd)
@@ -216,14 +311,53 @@ namespace InteractiveDataDisplay.WPF
                     masterPlot.YFromTop(screenEnd.Y) - masterPlot.YFromTop(screenStart.Y) : 0;
                 var rect = masterPlot.PlotRect;
 
-                double width = rect.Width;
-                double height = rect.Height;
+                ValidateNavigationLimits();
+                bool returnToAvailableArea = NeedReturnToAvailableArea(
+                    ref rect, NavigationLimitMaxX, NavigationLimitMinX,
+                    NavigationLimitMaxY, NavigationLimitMinY);
 
-                masterPlot.SetPlotRect(new DataRect(
-                    rect.XMin - dx,
-                    rect.YMin - dy,
-                    rect.XMin - dx + width,
-                    rect.YMin - dy + height));
+                if (returnToAvailableArea)
+                {
+                    masterPlot.SetPlotRect(rect);
+                }
+                else
+                {
+                    double width = rect.Width;
+                    double height = rect.Height;
+
+                    var newRect = new DataRect(
+                        rect.XMin - dx,
+                        rect.YMin - dy,
+                        rect.XMin - dx + width,
+                        rect.YMin - dy + height);
+
+                    bool xInBounds = NavigationXIsInBounds(newRect, NavigationLimitMaxX, NavigationLimitMinX);
+                    bool yInBounds = NavigationYIsInBounds(newRect, NavigationLimitMaxY, NavigationLimitMinY);
+
+
+                    if (xInBounds && !yInBounds)
+                    {
+                        newRect = new DataRect(
+                        rect.XMin - dx,
+                        rect.YMin,
+                        rect.XMin - dx + width,
+                        rect.YMin + height);
+                        yInBounds = true;
+                    }
+                    else if (!xInBounds && yInBounds)
+                    {
+                        newRect = new DataRect(
+                        rect.XMin,
+                        rect.YMin - dy,
+                        rect.XMin + width,
+                        rect.YMin - dy + height);
+                        xInBounds = true;
+                    }
+
+
+                    if (xInBounds && yInBounds)
+                        masterPlot.SetPlotRect(newRect);
+                }
 
                 masterPlot.IsAutoFitEnabled = false;
             }
@@ -271,7 +405,7 @@ namespace InteractiveDataDisplay.WPF
             {
                 if (wasInside && isLeftClicked)
                 {
-                    HandleMouseUp();
+                    HandleMouseUp(e);
                     HandleMouseDown(e);
                 }
             }
@@ -378,7 +512,7 @@ namespace InteractiveDataDisplay.WPF
 
         private void MouseNavigationLayer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = HandleMouseUp();
+            e.Handled = HandleMouseUp(e);
         }
 
         private bool CheckCursor(Point cursorPosition)
@@ -399,7 +533,8 @@ namespace InteractiveDataDisplay.WPF
                 {
                     if (Keyboard.Modifiers == ModifierKeys.Shift)
                     {
-                        DoZoom(1.2);
+                        if (ZoomByShiftAndCtrl)
+                            DoZoom(1.2);
                     }
                     else
                     {
@@ -441,17 +576,21 @@ namespace InteractiveDataDisplay.WPF
             return true;
         }
 
-        private bool HandleMouseUp()
+        private bool HandleMouseUp(MouseEventArgs e)
         {
             isLeftClicked = false;
             isPanning = false;
-            if ((!isSelecting || !selectingStarted) && (Keyboard.Modifiers == ModifierKeys.Control))
+            if ((!isSelecting || !selectingStarted))
             {
                 DateTime d = DateTime.Now;
                 if ((d - lastClick).TotalMilliseconds < 300)
                 {
                     isSelecting = false;
-                    DoZoom(1 / 1.2);
+                    if (Keyboard.Modifiers == ModifierKeys.Control
+                        && ZoomByShiftAndCtrl)
+                        DoZoom(1 / 1.2);
+                    else if (Click != null)
+                        Click.Invoke(this, e);
                 }
             }
             if (isSelecting)
